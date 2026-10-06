@@ -38,3 +38,18 @@ def test_find_labels(text: str, value_tags: list[str]):
     insights = find_labels(text)
     detected_value_tags = set(i.value_tag for i in insights)
     assert detected_value_tags == set(value_tags)
+
+def test_nutriscore_v2_detection():
+    from robotoff.prediction.ocr.label import find_labels
+    
+    # On simule un texte extrait par l'OCR sur un emballage v2
+    texte_ocr = "Ce produit respecte le nouveau calcul du Nutri-Score."
+    
+    # On lance la fonction de détection du projet
+    predictions = find_labels(texte_ocr)
+    
+    # On extrait tous les tags détectés
+    tags_detectes = [p.value_tag for p in predictions]
+    
+    # Le test réussit si notre nouveau tag est bien détecté
+    assert "en:nutriscore" in tags_detectes

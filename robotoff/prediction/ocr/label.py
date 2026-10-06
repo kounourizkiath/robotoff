@@ -23,7 +23,8 @@ logger = logging.getLogger(__name__)
 
 # Increase version ID when introducing breaking change: changes for which we
 # want old predictions to be removed in DB and replaced by newer ones
-PREDICTOR_VERSION = "1"
+PREDICTOR_VERSION = "2"  # On passe de "1" à "2"
+
 
 
 def process_eu_bio_label_code(match) -> str | None:
@@ -92,6 +93,13 @@ LABELS_REGEX = {
     ],
     "en:nutriscore": [
         OCRRegex(re.compile(r"NUTRI-SCORE"), field=OCRField.full_text),
+        OCRRegex(
+            re.compile(
+                r"nouveau calcul|new calculation|nuevo c[áa]lculo|neue berechnung|nieuwe berekening",
+                re.I
+            ),
+            field=OCRField.full_text_contiguous,
+        ),
     ],
     "en:eu-non-eu-agriculture": [
         OCRRegex(
