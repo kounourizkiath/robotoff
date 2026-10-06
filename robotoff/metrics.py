@@ -1,5 +1,6 @@
 import datetime
 import logging
+import time  # 💡 Ajouté pour la temporisation des requêtes
 from urllib.parse import urlparse
 
 from influxdb_client import InfluxDBClient
@@ -129,8 +130,10 @@ def save_facet_metrics():
                 inserts += generate_metrics_from_path(
                     server_type, country_tag, url_path, target_datetime, count
                 )
+                # ⏳ Micro-pause de 200ms pour lisser le trafic et éviter le blocage de sécurité HTTP 503
+                time.sleep(0.2)
             except Exception:
-                logger.exception()
+                logger.exception("Failed to generate metrics for path %s in country %s", url_path, country_tag)
 
         try:
             inserts += generate_metrics_from_path(
